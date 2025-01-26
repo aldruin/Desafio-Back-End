@@ -11,7 +11,8 @@ public class Wallet : Entity
     public Guid UserId { get; set; }
     public User User { get; set; }
     public decimal Balance { get; set; }
-    public virtual ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
+    public virtual ICollection<Transaction> OriginTransactions { get; set; } = new List<Transaction>();
+    public virtual ICollection<Transaction> DestineTransactions { get; set; } = new List<Transaction>();
 
     public Wallet() { }
 }

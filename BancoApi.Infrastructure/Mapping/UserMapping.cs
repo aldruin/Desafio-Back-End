@@ -44,19 +44,15 @@ public class UserMapping : IEntityTypeConfiguration<User>
             .IsRequired()
             .HasComment("CPF do Usuário");
 
-        builder.Property(u => u.Email)
-            .HasColumnName("Email")
-            .HasColumnOrder(5)
-            .HasMaxLength(200)
-            .IsRequired()
-            .HasComment("Email do Usuário");
+        builder.OwnsOne(x => x.Email, p =>
+        {
+            p.Property(f => f.Value).HasColumnName("Email").IsRequired().HasMaxLength(1024);
+        });
 
-        builder.Property(u => u.Password)
-            .HasColumnName("Password")
-            .HasColumnOrder(6)
-            .HasMaxLength(500)
-            .IsRequired()
-            .HasComment("Senha do Usuário");
+        builder.OwnsOne(x => x.Password, p =>
+        {
+            p.Property(f => f.Value).HasColumnName("Password").IsRequired();
+        });
 
         builder.HasOne(u => u.Wallet)
             .WithOne(w => w.User)
