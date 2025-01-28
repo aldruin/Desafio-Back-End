@@ -1,4 +1,5 @@
-﻿using BancoApi.Infrastructure.Repositories;
+﻿using BancoApi.Domain.Repositories;
+using BancoApi.Infrastructure.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,8 @@ public static class ConfigurationModule
     public static IServiceCollection RegisterRepository(this IServiceCollection services)
     {
         services.AddScoped(typeof(Repository<>));
+        services.AddScoped <IUserRepository, UserRepository> ();
+        services.AddScoped<IWalletRepository, WalletRepository>();
 
         return services;
     }
