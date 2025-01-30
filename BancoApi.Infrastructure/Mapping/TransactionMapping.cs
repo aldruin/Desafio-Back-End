@@ -8,9 +8,9 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace BancoApi.Infrastructure.Mapping;
-public class TransactionMapping : IEntityTypeConfiguration<Transaction>
+public class TransactionMapping : IEntityTypeConfiguration<TransactionWallet>
 {
-    public void Configure(EntityTypeBuilder<Transaction> builder)
+    public void Configure(EntityTypeBuilder<TransactionWallet> builder)
     {
         builder.ToTable("Transaction");
 
@@ -28,7 +28,7 @@ public class TransactionMapping : IEntityTypeConfiguration<Transaction>
             .HasColumnOrder(2)
             .HasComment("Chave Estrangeira para a Carteira de Origem");
 
-        builder.Property(t => t.DestineWalletId)
+        builder.Property(t => t.DestinationWalletId)
             .HasColumnName("DestineWalletId")
             .HasColumnOrder(3)
             .HasComment("Chave Estrangeira para a Carteira de Destino");
@@ -43,8 +43,26 @@ public class TransactionMapping : IEntityTypeConfiguration<Transaction>
         builder.Property(t => t.TransactionDate)
             .HasColumnName("TransactionDate")
             .HasColumnOrder(5)
-            .HasColumnType("timestamp")
+            .HasColumnType("timestamp with time zone")
             .IsRequired()
             .HasComment("Data da Transação");
+
+        builder.Property(t => t.Operation)
+            .HasColumnName("TransactionOperation")
+            .HasColumnOrder(6)
+            .HasConversion<string>()
+            .IsRequired()
+            .HasComment("Tipo da Transação: Deposit, Withdraw ou Transference");
+
+
+        builder.HasOne(t => t.OriginWallet)
+            .WithMany()
+            .HasForeignKey(t => t.OriginWalletId)
+            .OnDelete(DeleteBehavior.NoAction);
+
+        builder.HasOne(t => t.DestinationWallet)
+            .WithMany()
+            .HasForeignKey(t => t.DestinationWalletId)
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }

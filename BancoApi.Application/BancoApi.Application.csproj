@@ -9,7 +9,6 @@
   <ItemGroup>
     <Folder Include="Jwt\Dtos\" />
     <Folder Include="Jwt\Services\" />
-    <Folder Include="Transactions\Services\" />
   </ItemGroup>
 
   <ItemGroup>

@@ -35,14 +35,9 @@ public class WalletMapping : IEntityTypeConfiguration<Wallet>
             .IsRequired()
             .HasComment("Saldo da Carteira");
 
-        builder.HasMany(w => w.OriginTransactions)
-            .WithOne(t => t.OriginWallet)
-            .HasForeignKey(t => t.OriginWalletId)
-            .OnDelete(DeleteBehavior.NoAction);
-
-        builder.HasMany(w => w.DestineTransactions)
-            .WithOne(t => t.DestineWallet)
-            .HasForeignKey(t => t.DestineWalletId)
-            .OnDelete(DeleteBehavior.NoAction);
+        builder.Property(w => w.TransactionsId)
+            .HasColumnName("TransactionsId")
+            .HasColumnOrder(4)
+            .HasComment("Lista de IDs das Transações Associadas à Carteira");
     }
 }

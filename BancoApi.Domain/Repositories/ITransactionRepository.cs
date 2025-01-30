@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace BancoApi.Domain.Repositories;
-public interface IWalletRepository : IRepository<Wallet>
+public interface ITransactionRepository : IRepository<TransactionWallet>
 {
-    Task<Wallet> GetByExpressionAsync(Expression<Func<Wallet, bool>> expression);
+    Task<TransactionWallet> GetByExpressionAsync(Expression<Func<TransactionWallet, bool>> expression);
 }

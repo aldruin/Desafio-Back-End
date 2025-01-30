@@ -15,6 +15,7 @@ public static class ConfigurationModule
         services.AddScoped(typeof(Repository<>));
         services.AddScoped <IUserRepository, UserRepository> ();
         services.AddScoped<IWalletRepository, WalletRepository>();
+        services.AddScoped<ITransactionRepository, TransactionRepository>();
 
         return services;
     }

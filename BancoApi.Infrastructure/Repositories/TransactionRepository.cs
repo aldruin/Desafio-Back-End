@@ -10,12 +10,12 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace BancoApi.Infrastructure.Repositories;
-public class WalletRepository : Repository<Wallet>, IWalletRepository
+public class TransactionRepository : Repository<TransactionWallet>, ITransactionRepository
 {
-    public WalletRepository(BancoApiDbContext context) : base(context)
+    public TransactionRepository(BancoApiDbContext context) : base(context)
     {
     }
-    public async Task<Wallet> GetByExpressionAsync(Expression<Func<Wallet, bool>> expression)
+    public async Task<TransactionWallet> GetByExpressionAsync(Expression<Func<TransactionWallet, bool>> expression)
     {
         return await this.Query.FirstOrDefaultAsync(expression);
     }

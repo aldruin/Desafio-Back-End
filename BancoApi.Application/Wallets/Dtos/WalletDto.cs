@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 namespace BancoApi.Application.Wallets.Dtos;
 public record WalletDto
 {
-    public Guid UserId { get; set; }
+    public Guid? Id { get; set; }
+    public Guid? UserId { get; set; }
     public decimal? Balance { get; set; }
-    public virtual ICollection<Transaction>? OriginTransactions { get; set; }
-    public virtual ICollection<Transaction>? DestineTransactions { get; set; }
+    public virtual List<Guid>? TransactionsId { get; set; }
 }

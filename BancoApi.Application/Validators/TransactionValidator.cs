@@ -15,10 +15,9 @@ public class TransactionValidator : AbstractValidator<TransactionDto>
             .NotEmpty().WithMessage("A carteira de origem é obrigatória.")
             .Must(id => id != Guid.Empty).WithMessage("A carteira de origem é inválida.");
 
-        RuleFor(t => t.DestineWalletId)
+        RuleFor(t => t.DestinationWalletId)
             .NotEmpty().WithMessage("A carteira de destino é obrigatória.")
-            .Must(id => id != Guid.Empty).WithMessage("A carteira de destino é inválida.")
-            .NotEqual(t => t.OriginWalletId).WithMessage("A carteira de origem e destino devem ser diferentes.");
+            .Must(id => id != Guid.Empty).WithMessage("A carteira de destino é inválida.");
 
         RuleFor(t => t.Value)
             .GreaterThan(0).WithMessage("O valor da transação deve ser maior que zero.");

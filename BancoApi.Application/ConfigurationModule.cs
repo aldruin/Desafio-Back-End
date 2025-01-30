@@ -1,5 +1,6 @@
 ﻿using BancoApi.Application.Handlers;
 using BancoApi.Application.Notifications;
+using BancoApi.Application.Transactions.Services;
 using BancoApi.Application.Users.Services;
 using BancoApi.Application.Wallets.Services;
 using BancoApi.Domain.Notifications;
@@ -21,6 +22,7 @@ public static class ConfigurationModule
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IWalletService, WalletService>();
         services.AddScoped<INotificationHandler, NotificationHandler>();
+        services.AddScoped<ITransactionService, TransactionService>();
 
         services.AddCors(options =>
         {
