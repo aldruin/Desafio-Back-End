@@ -175,7 +175,7 @@ public class WalletService : IWalletService
                     case "Transference":
                         if (originWallet.Balance < value)
                         {
-                            _notificationHandler.AddNotification("InsufficientFunds", "Saldo insuficiente para realizar o saque.");
+                            _notificationHandler.AddNotification("InsufficientFunds", "Saldo insuficiente para realizar a transferencia.");
                             return false;
                         }
 
