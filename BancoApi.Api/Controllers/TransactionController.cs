@@ -2,11 +2,13 @@
 using BancoApi.Application.Transactions.Dtos;
 using BancoApi.Application.Transactions.Services;
 using BancoApi.Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BancoApi.Api.Controllers;
 [Route("api/[controller]")]
+[Authorize]
 [ApiController]
 public class TransactionController : ControllerBase
 {

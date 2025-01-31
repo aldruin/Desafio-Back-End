@@ -14,6 +14,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using System.Transactions;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace BancoApi.Application.Transactions.Services;
 public class TransactionService : ITransactionService
@@ -37,34 +38,40 @@ public class TransactionService : ITransactionService
         {
             try
             {
-                var validate = await new TransactionValidator().ValidateAsync(dto);
-                if (!validate.IsValid)
+                //var validate = await new TransactionValidator().ValidateAsync(dto);
+                //if (!validate.IsValid)
+                //{
+                //    foreach (var error in validate.Errors)
+                //    {
+                //        _notificationHandler.AddNotification("InvalidTransaction", $"Erro ao criar transação: {error.ErrorMessage}");
+                //        return null;
+                //    }
+                //}
+
+                if(dto.Value <= 0)
                 {
-                    foreach (var error in validate.Errors)
-                    {
-                        _notificationHandler.AddNotification("InvalidTransaction", $"Erro ao criar transação: {error.ErrorMessage}");
-                        return null;
-                    }
+                    _notificationHandler.AddNotification("InvalidTransaction", "Erro ao criar transação, Valor deve ser maior do que zero.");
+                    return null;
                 }
 
                 //aqui a ideia é obter a originWallet como wallet do usuario logado, garantindo que
                 //a wallet sempre seja referenciada na operação como a do usuario autenticado
 
-                //var destineWallet = Guid.TryParse(user.FindFirst("walletId")?.Value, out var walletId) ? walletId : Guid.Empty;
-                //if (destineWallet == Guid.Empty)
-                //{
-                //    _notificationHandler.AddNotification("InvalidWallet", "Wallet ID do usuário não encontrado ou inválido.");
-                //    return null;
-                //}
+                var loggerUserWallet = Guid.TryParse(user.FindFirst("walletId")?.Value, out var walletId) ? walletId : Guid.Empty;
+                if (loggerUserWallet == Guid.Empty)
+                {
+                    _notificationHandler.AddNotification("InvalidWallet", "Wallet ID do usuário não encontrado ou inválido.");
+                    return null;
+                }
 
-                var authenticatedUserWalletId = dto.DestinationWalletId;
+                var authenticatedUserWalletId = loggerUserWallet;
 
                 var operation = TransactionOperation.Deposit;
 
                 var transaction = new TransactionWallet
                 {
                     OriginWalletId = authenticatedUserWalletId,
-                    DestinationWalletId = dto.DestinationWalletId,
+                    DestinationWalletId = authenticatedUserWalletId,
                     Value = dto.Value,
                     TransactionDate = DateTime.UtcNow,
                     Operation = operation
