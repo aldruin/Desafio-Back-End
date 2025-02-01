@@ -3,6 +3,7 @@ using BancoApi.Application.Users.Dtos;
 using BancoApi.Application.Users.Services;
 using BancoApi.Domain.Notifications;
 using BancoApi.Domain.ValueObject;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -41,10 +42,12 @@ public class UserController : ControllerBase
         });
     }
 
-    [HttpGet("id/{id}")]
-    public async Task<IActionResult> GetByIdAsync([FromRoute] Guid id)
+    [Authorize]
+    [HttpGet("id")]
+    public async Task<IActionResult> GetByIdAsync()
     {
-        var user = await _userService.GetByIdAsync(id);
+        var loggedUser = HttpContext.User;
+        var user = await _userService.GetByIdAsync(loggedUser);
         var notifications = _notificationHandler.GetNotifications();
         if (user != null)
         {
@@ -62,10 +65,12 @@ public class UserController : ControllerBase
         });
     }
 
-    [HttpGet("cpf/{cpf}")]
-    public async Task<IActionResult> GetByCpfAsync([FromRoute] string cpf)
+    [Authorize]
+    [HttpGet("cpf")]
+    public async Task<IActionResult> GetByCpfAsync()
     {
-        var user = await _userService.GetByCpfAsync(cpf);
+        var loggedUser = HttpContext.User;
+        var user = await _userService.GetByCpfAsync(loggedUser);
         var notifications = _notificationHandler.GetNotifications();
         if (user != null)
         {
@@ -83,10 +88,12 @@ public class UserController : ControllerBase
         });
     }
 
-    [HttpGet("email/{email}")]
-    public async Task<IActionResult> GetByEmailAsync([FromRoute] string email)
+    [Authorize]
+    [HttpGet("email")]
+    public async Task<IActionResult> GetByEmailAsync()
     {
-        var user = await _userService.GetByEmailAsync(email);
+        var loggedUser = HttpContext.User;
+        var user = await _userService.GetByEmailAsync(loggedUser);
         var notifications = _notificationHandler.GetNotifications();
         if (user != null)
         {
@@ -104,10 +111,12 @@ public class UserController : ControllerBase
         });
     }
 
+    [Authorize]
     [HttpPut("update")]
     public async Task<IActionResult> UpdateAsync([FromBody] UserDto dto)
     {
-        var user = await _userService.UpdateAsync(dto);
+        var loggedUser = HttpContext.User;
+        var user = await _userService.UpdateAsync(loggedUser, dto);
         var notifications = _notificationHandler.GetNotifications();
         if (user != null)
         {
@@ -125,10 +134,12 @@ public class UserController : ControllerBase
         });
     }
 
-    [HttpDelete("id/{id}")]
-    public async Task<IActionResult> DeleteByIdAsync([FromRoute] Guid id)
+    [Authorize]
+    [HttpDelete("id")]
+    public async Task<IActionResult> DeleteByIdAsync()
     {
-        var user = await _userService.RemoveByIdAsync(id);
+        var loggedUser = HttpContext.User;
+        var user = await _userService.RemoveByIdAsync(loggedUser);
         var notifications = _notificationHandler.GetNotifications();
         if (user != null)
         {

@@ -32,13 +32,16 @@ public class JwtService : IJwtService
         var handler = new JwtSecurityTokenHandler();
         var jwtSecurityToken = handler.ReadJwtToken(token);
         var walletClaim = jwtSecurityToken.Claims.FirstOrDefault(u => u.Type == "walletId")?.Value;
+        var idClaim = jwtSecurityToken.Claims.FirstOrDefault(u => u.Type == "userId")?.Value;
 
         return await Task.FromResult(
             new JwtTokenViewModel
             {
-                Id = Guid.Parse(jwtSecurityToken.Claims.FirstOrDefault(u => u.Type == "sub")?.Value),
-                Email = jwtSecurityToken.Claims.FirstOrDefault(u => u.Type == "email")?.Value,
-                WalletId = Guid.TryParse(walletClaim, out var walletId) ? walletId : Guid.Empty
+                Id = Guid.TryParse(idClaim, out var userId) ? userId : Guid.Empty,
+                Email = jwtSecurityToken.Claims.FirstOrDefault(u => u.Type == "userEmail")?.Value,
+                WalletId = Guid.TryParse(walletClaim, out var walletId) ? walletId : Guid.Empty,
+                UserCpf = jwtSecurityToken.Claims.FirstOrDefault(u=> u.Type == "userCpf")?.Value
+
             }
         );
     }
@@ -52,8 +55,9 @@ public class JwtService : IJwtService
             Subject = new ClaimsIdentity(new Claim[]
             {
                     new Claim(ClaimTypes.Email, jwtDto.Email.ToString()),
-                    new Claim(JwtRegisteredClaimNames.Sub, jwtDto.Id.ToString()),
-                    new Claim("walletId", jwtDto.WalletId.ToString())
+                    new Claim(ClaimTypes.NameIdentifier, jwtDto.Id.ToString()),
+                    new Claim("walletId", jwtDto.WalletId.ToString()),
+                    new Claim("userCpf", jwtDto.UserCpf)
 
             }),
             Expires = DateTime.UtcNow.AddHours(double.Parse(_configuration["JwtSecurity:Expiration"])),

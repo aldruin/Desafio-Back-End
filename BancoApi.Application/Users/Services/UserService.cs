@@ -86,8 +86,11 @@ public class UserService : IUserService
         }
     }
 
-    public async Task<UserDto> GetByCpfAsync(string cpf)
+    public async Task<UserDto> GetByCpfAsync(ClaimsPrincipal loggedUser)
     {
+
+        var cpf = loggedUser.FindFirst("userCpf")?.Value.ToString();
+
         if (cpf == null)
         {
             _notificationHandler.AddNotification("InvalidUserCPF", "CPF de usuário nulo ou em branco.");
@@ -114,8 +117,9 @@ public class UserService : IUserService
         };
     }
 
-    public async Task<UserDto> GetByEmailAsync(string email)
+    public async Task<UserDto> GetByEmailAsync(ClaimsPrincipal loggedUser)
     {
+        var email = loggedUser.FindFirst(ClaimTypes.Email)?.Value.ToString();
         if (email == null)
         {
             _notificationHandler.AddNotification("InvalidUserCPF", "E-mail de usuário nulo ou em branco.");
@@ -140,8 +144,11 @@ public class UserService : IUserService
         };
     }
 
-    public async Task<UserDto> GetByIdAsync(Guid id)
+    public async Task<UserDto> GetByIdAsync(ClaimsPrincipal loggedUser)
     {
+        var id = Guid.TryParse(loggedUser.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var userId) ? userId : Guid.Empty;
+
+
         if (id == Guid.Empty)
         {
             _notificationHandler.AddNotification("InvalidUserId", "O ID informado é inválido.");
@@ -169,8 +176,10 @@ public class UserService : IUserService
 
     }
 
-    public async Task<UserDto> RemoveByIdAsync(Guid id)
+    public async Task<UserDto> RemoveByIdAsync(ClaimsPrincipal loggedUser)
     {
+        var id = Guid.TryParse(loggedUser.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var userId) ? userId : Guid.Empty;
+
         if (id == Guid.Empty)
         {
             _notificationHandler.AddNotification("InvalidUserId", "O ID informado é inválido.");
@@ -192,7 +201,7 @@ public class UserService : IUserService
         return null;
     }
 
-    public async Task<UserDto> UpdateAsync(UserDto dto)
+    public async Task<UserDto> UpdateAsync(ClaimsPrincipal loggedUser, UserDto dto)
     {
         var validate = await new UserValidator().ValidateAsync(dto);
         if (!validate.IsValid)
@@ -202,6 +211,14 @@ public class UserService : IUserService
                 _notificationHandler.AddNotification("InvalidUser", error.ErrorMessage);
                 return null;
             }
+        }
+
+        var loggedUserId = Guid.TryParse(loggedUser.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var userId) ? userId : Guid.Empty;
+
+        if (dto.Id != loggedUserId)
+        {
+            _notificationHandler.AddNotification("Unauthorized", "O ID do Usuario logado não coincide com o ID passado.");
+            return null;
         }
 
         var user = await _userRepository.GetByIdAsync(dto.Id);

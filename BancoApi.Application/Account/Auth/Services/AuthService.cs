@@ -24,7 +24,7 @@ public class AuthService : IAuthService
     {
         var user = await _userRepository.GetByExpressionAsync(x => x.Email.Value == request.Email);
         if (user == null) { return null; }
-        var jwtToken = await _jwtService.GenerateToken(new JwtDto(user.Id, user.Email.Value, user.Wallet.Id));
+        var jwtToken = await _jwtService.GenerateToken(new JwtDto(user.Id, user.Email.Value, user.Wallet.Id, user.Cpf));
 
         return new UserResponse
         {

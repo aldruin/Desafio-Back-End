@@ -1,10 +1,12 @@
 ﻿using BancoApi.Application.Notifications;
 using BancoApi.Application.Wallets.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BancoApi.Api.Controllers;
 [Route("api/[controller]")]
+[Authorize]
 [ApiController]
 public class WalletController : ControllerBase
 {
@@ -17,10 +19,11 @@ public class WalletController : ControllerBase
         _notificationHandler = notificationHandler;
     }
 
-    [HttpGet("userid/{userId}")]
-    public async Task<IActionResult> GetByUserIdAsync([FromRoute]Guid userId)
+    [HttpGet("id")]
+    public async Task<IActionResult> GetByUserIdAsync()
     {
-        var wallet = await _walletService.GetByUserIdAsync(userId);
+        var loggedUser = HttpContext.User;
+        var wallet = await _walletService.GetByUserIdAsync(loggedUser);
         var notifications = _notificationHandler.GetNotifications();
         if (wallet != null)
         {
@@ -39,10 +42,11 @@ public class WalletController : ControllerBase
     }
 
 
-    [HttpGet("usercpf/{userCpf}")]
-    public async Task<IActionResult> GetByUserCpfAsync([FromRoute] string userCpf)
+    [HttpGet("cpf")]
+    public async Task<IActionResult> GetByUserCpfAsync()
     {
-        var wallet = await _walletService.GetByUserCpfAsync(userCpf);
+        var loggedUser = HttpContext.User;
+        var wallet = await _walletService.GetByUserCpfAsync(loggedUser);
         var notifications = _notificationHandler.GetNotifications();
         if (wallet != null)
         {
@@ -60,10 +64,11 @@ public class WalletController : ControllerBase
         });
     }
 
-    [HttpGet("useremail/{userEmail}")]
-    public async Task<IActionResult> GetByUserEmailASync([FromRoute] string userEmail)
+    [HttpGet("email")]
+    public async Task<IActionResult> GetByUserEmailASync()
     {
-        var wallet = await _walletService.GetByUserEmailAsync(userEmail);
+        var loggedUser = HttpContext.User;
+        var wallet = await _walletService.GetByUserEmailAsync(loggedUser);
         var notifications = _notificationHandler.GetNotifications();
         if (wallet != null)
         {

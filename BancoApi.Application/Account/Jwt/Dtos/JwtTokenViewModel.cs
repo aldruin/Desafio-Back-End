@@ -11,4 +11,5 @@ public record JwtTokenViewModel
     public Guid Id { get; set; }
     public string Email { get; set; }
     public Guid WalletId { get; set; }
+    public string UserCpf { get; set; }
 }

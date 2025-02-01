@@ -8,7 +8,9 @@ using BancoApi.Domain.Enums;
 using BancoApi.Domain.Repositories;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using System.Transactions;
@@ -52,15 +54,22 @@ public class WalletService : IWalletService
 
     }
 
-    public async Task<WalletDto> GetByUserIdAsync(Guid userId)
+    public async Task<WalletDto> GetByUserIdAsync(ClaimsPrincipal user)
     {
-        if (userId == Guid.Empty)
+        var loggedUserId = Guid.TryParse(user.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var userId) ? userId : Guid.Empty;
+        if (loggedUserId == Guid.Empty)
+        {
+            _notificationHandler.AddNotification("InvalidUserId", "ID de Usuário não encontrado ou inválido.");
+            return null;
+        }
+
+        if (loggedUserId == Guid.Empty)
         {
             _notificationHandler.AddNotification("FailToGetWallet", "Erro ao obter carteira de usuário, informe um ID válido do tipo Guid.");
             return null;
         }
 
-        var wallet = await _walletRepository.GetByExpressionAsync(w => w.UserId == userId);
+        var wallet = await _walletRepository.GetByExpressionAsync(w => w.UserId == loggedUserId);
 
         if (wallet == null)
         {
@@ -78,8 +87,11 @@ public class WalletService : IWalletService
         };
     }
 
-    public async Task<WalletDto> GetByUserCpfAsync(string userCpf)
+    public async Task<WalletDto> GetByUserCpfAsync(ClaimsPrincipal user)
     {
+        var userCpf = user.FindFirst("userCpf")?.Value.ToString();
+
+
         if (userCpf == null)
         {
             _notificationHandler.AddNotification("FailToGetWallet", "Erro ao obter carteira de usuário, informe um CPF válido.");
@@ -104,32 +116,33 @@ public class WalletService : IWalletService
         };
     }
 
-    public async Task<WalletDto> GetByUserEmailAsync(string userEmail)
+    public async Task<WalletDto> GetByUserEmailAsync(ClaimsPrincipal user)
     {
+        var userEmail = user.FindFirst(ClaimTypes.Email)?.Value.ToString();
+
+        if (userEmail == null)
         {
-            if (userEmail == null)
-            {
-                _notificationHandler.AddNotification("FailToGetWallet", "Erro ao obter carteira de usuário, informe um Email válido.");
-                return null;
-            }
-
-            var wallet = await _walletRepository.GetByExpressionAsync(w => w.User.Email.Value == userEmail);
-
-            if (wallet == null)
-            {
-                _notificationHandler.AddNotification("WalletNotFound", "Nenhuma carteira encontrada com Email de usuário fornecido.");
-                return null;
-            }
-
-            _notificationHandler.AddNotification("WalletFound", "Carteira de usuário obtida com sucesso!");
-            return new WalletDto
-            {
-                Id = wallet.Id,
-                UserId = wallet.UserId,
-                Balance = wallet.Balance,
-                TransactionsId = wallet.TransactionsId
-            };
+            _notificationHandler.AddNotification("FailToGetWallet", "Erro ao obter carteira de usuário, informe um Email válido.");
+            return null;
         }
+
+        var wallet = await _walletRepository.GetByExpressionAsync(w => w.User.Email.Value == userEmail);
+
+        if (wallet == null)
+        {
+            _notificationHandler.AddNotification("WalletNotFound", "Nenhuma carteira encontrada com Email de usuário fornecido.");
+            return null;
+        }
+
+        _notificationHandler.AddNotification("WalletFound", "Carteira de usuário obtida com sucesso!");
+        return new WalletDto
+        {
+            Id = wallet.Id,
+            UserId = wallet.UserId,
+            Balance = wallet.Balance,
+            TransactionsId = wallet.TransactionsId
+        };
+
     }
 
     public async Task<bool> UpdateBalanceAsync(Guid transactionId, Guid originWalletId, Guid destinationWalletId, decimal value, string operation)

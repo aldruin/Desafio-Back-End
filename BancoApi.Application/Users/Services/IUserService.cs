@@ -10,9 +10,9 @@ namespace BancoApi.Application.Users.Services;
 public interface IUserService
 {
     Task<UserDto> CreateAsync(UserDto dto);
-    Task<UserDto> GetByIdAsync(Guid id);
-    Task<UserDto> GetByCpfAsync(string cpf);
-    Task<UserDto> GetByEmailAsync(string email);
-    Task<UserDto> UpdateAsync(UserDto dto);
-    Task<UserDto> RemoveByIdAsync(Guid id);
+    Task<UserDto> GetByIdAsync(ClaimsPrincipal user);
+    Task<UserDto> GetByCpfAsync(ClaimsPrincipal user);
+    Task<UserDto> GetByEmailAsync(ClaimsPrincipal user);
+    Task<UserDto> UpdateAsync(ClaimsPrincipal user, UserDto dto);
+    Task<UserDto> RemoveByIdAsync(ClaimsPrincipal user);
 }

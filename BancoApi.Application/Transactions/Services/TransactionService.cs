@@ -38,24 +38,12 @@ public class TransactionService : ITransactionService
         {
             try
             {
-                //var validate = await new TransactionValidator().ValidateAsync(dto);
-                //if (!validate.IsValid)
-                //{
-                //    foreach (var error in validate.Errors)
-                //    {
-                //        _notificationHandler.AddNotification("InvalidTransaction", $"Erro ao criar transação: {error.ErrorMessage}");
-                //        return null;
-                //    }
-                //}
-
                 if(dto.Value <= 0)
                 {
                     _notificationHandler.AddNotification("InvalidTransaction", "Erro ao criar transação, Valor deve ser maior do que zero.");
                     return null;
                 }
 
-                //aqui a ideia é obter a originWallet como wallet do usuario logado, garantindo que
-                //a wallet sempre seja referenciada na operação como a do usuario autenticado
 
                 var loggerUserWallet = Guid.TryParse(user.FindFirst("walletId")?.Value, out var walletId) ? walletId : Guid.Empty;
                 if (loggerUserWallet == Guid.Empty)
@@ -110,7 +98,77 @@ public class TransactionService : ITransactionService
 
     public Task<TransactionDto> TransferAsync(ClaimsPrincipal user, TransactionDto dto)
     {
-        throw new NotImplementedException();
+        return null;
+        //using (var transactionScope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+        //{
+        //    try
+        //    {
+        //        //var validate = await new TransactionValidator().ValidateAsync(dto);
+        //        //if (!validate.IsValid)
+        //        //{
+        //        //    foreach (var error in validate.Errors)
+        //        //    {
+        //        //        _notificationHandler.AddNotification("InvalidTransaction", $"Erro ao criar transação: {error.ErrorMessage}");
+        //        //        return null;
+        //        //    }
+        //        //}
+
+        //        if (dto.Value <= 0)
+        //        {
+        //            _notificationHandler.AddNotification("InvalidTransaction", "Erro ao criar transação, Valor deve ser maior do que zero.");
+        //            return null;
+        //        }
+
+
+        //        var loggerUserWallet = Guid.TryParse(user.FindFirst("walletId")?.Value, out var walletId) ? walletId : Guid.Empty;
+        //        if (loggerUserWallet == Guid.Empty)
+        //        {
+        //            _notificationHandler.AddNotification("InvalidWallet", "Wallet ID do usuário não encontrado ou inválido.");
+        //            return null;
+        //        }
+
+        //        var authenticatedUserWalletId = loggerUserWallet;
+
+        //        var operation = TransactionOperation.Deposit;
+
+        //        var transaction = new TransactionWallet
+        //        {
+        //            OriginWalletId = authenticatedUserWalletId,
+        //            DestinationWalletId = authenticatedUserWalletId,
+        //            Value = dto.Value,
+        //            TransactionDate = DateTime.UtcNow,
+        //            Operation = operation
+        //        };
+
+        //        await _transactionRepository.AddAsync(transaction);
+
+        //        bool isBalanceUpdated = await _walletService.UpdateBalanceAsync(transaction.Id, transaction.OriginWalletId, transaction.DestinationWalletId, transaction.Value, operation.ToString());
+        //        if (!isBalanceUpdated)
+        //        {
+        //            _notificationHandler.AddNotification("DepositFailed", "Falha ao atualizar o saldo da carteira de destino.");
+        //            return null;
+        //        }
+
+        //        transactionScope.Complete();
+
+        //        _notificationHandler.AddNotification("TransactionOK", "Transação realizada com sucesso!");
+        //        _notificationHandler.AddNotification("WalletBalanceUpdated", "Deposito realizado com sucesso!");
+
+        //        return new TransactionDto
+        //        {
+        //            Id = transaction.Id,
+        //            OriginWalletId = transaction.OriginWalletId,
+        //            DestinationWalletId = transaction.DestinationWalletId,
+        //            Value = transaction.Value,
+        //            TransactionDate = transaction.TransactionDate
+        //        };
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _notificationHandler.AddNotification("DepositTransactionFailed", $"Erro ao realizar transação de deposito: {ex.Message}");
+        //        return null;
+        //    }
+        //}
     }
 
     public Task<TransactionDto> WithdrawAsync(ClaimsPrincipal user, TransactionDto dto)
