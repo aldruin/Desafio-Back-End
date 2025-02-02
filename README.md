@@ -143,9 +143,35 @@ A **BancoAPI** é uma API RESTful que permite a gestão de usuários, carteiras 
   **Os metodos GET de Usuário possui O mesmo padrão para E-mail e Senha, com os endpoints:**
   - **GET /api/user/cpf**
   - **GET /api/user/email**
-
+------------------------------------------------------------------------------------------------
 
   - **DELETE /api/user/cpf**
-        
+  Este endpoint remove o usuário logado, sua carteira e transações no banco de dados do sistema.
+
+  ***Autenticação:*** Bearer token no cabeçalho da requisição (token JWT do usuário logado)
+  
+  **Resposta:**
+  
+    ```json
+      [
+        {
+          "success": false,
+          "errors": [
+            {
+              "action": "UserDeleted",
+              "message": "Usuário deletado com sucesso."
+            }
+          ]
+        }
+      ]
+  ***Se não encontrado ou erro:***
+
+    "InvalidUserId", "O ID informado é inválido."
+    "UserNotFound", "Não foi possivel remover usuário com ID fornecido, usuário não encontrado."
+
+
+  
+  
+
 
 
