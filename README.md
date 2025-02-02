@@ -13,6 +13,9 @@ A **BancoAPI** é uma API REST desenvolvida em ASP.NET Core para facilitar a ges
     Injeção de Dependência
     Princípios S.O.L.I.D
 
+------------------------------------------------------------------------------------------------
+
+
 ## Como executar o projeto
 
 ### 1. Pré-requisitos
@@ -70,6 +73,8 @@ Certifique-se de ter os seguintes itens instalados:
       dotnet run
 
   **A API estará disponível em https://localhost:7000 ou http://localhost:5162.**
+
+------------------------------------------------------------------------------------------------
 
 
 ## Funcionalidades
@@ -395,6 +400,8 @@ Tanto originWalletId como destinationWalletId são obtidos pelo Claim do usuári
     "DepositFailed", "Falha ao atualizar o saldo da carteira de destino."
     "DepositTransactionFailed", $"Erro ao realizar transação de deposito: {ErrorMessage}"
 
+------------------------------------------------------------------------------------------------
+
 - POST api/transaction/transfer
 
 Este endpoint transfere o saldo da carteira do usuário para outro usuário, realizando uma transferência.
@@ -446,6 +453,8 @@ Este endpoint utiliza o E-mail como 'chave' para obter o destinatário da transa
     "ValueMustBeValuable", "O valor não pode ser nulo. Valor precisa ser maior do que zero."
     "TransferenceFailed", "Falha ao atualizar o saldo da carteira de destino."
     "FailToGetWallet", "Falha ao obter carteira com CPF fornecido. Carteira de usuário não encontrada."
+
+------------------------------------------------------------------------------------------------
 
 - GET api/transaction/transactions
     
@@ -532,6 +541,7 @@ Caso não insira nenhuma data, irá retornar todas as transações do usuário l
     "InvalidUserWallet", "Não foi possivel obter carteira do usuário logado"
     "NoTransactions", "Nenhuma transação encontrada para os critérios especificados."
     
+------------------------------------------------------------------------------------------------
 
 ###Contribuição
 
@@ -541,6 +551,8 @@ Sinta-se a vontade para contribuir!
 - Faça commit das mudanças (git commit -m 'Adiciona nova funcionalidade').
 - Faça o push para o branch (git push origin feature/nova-funcionalidade).
 - Abra um Pull Request.
+
+------------------------------------------------------------------------------------------------
 
 Este projeto foi desenvolvido para o desafio back-end utilizando C#!
 
