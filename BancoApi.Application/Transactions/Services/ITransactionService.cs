@@ -13,4 +13,5 @@ public interface ITransactionService
     Task<TransactionDto> DepositAsync(ClaimsPrincipal user, TransactionDto dto);
     Task<TransactionDto> WithdrawAsync(ClaimsPrincipal user, TransactionDto dto);
     Task<TransactionDto> TransferAsync(ClaimsPrincipal user, TransactionDto dto);
+    Task<List<TransactionDto>> GetTransactionsByUserWithOptionalDateFilter(ClaimsPrincipal user, DateTime? date);
 }

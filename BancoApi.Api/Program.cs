@@ -4,6 +4,9 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using BancoApi.Application;
 using Microsoft.OpenApi.Models;
+using BancoApi.Domain.Entities;
+using BancoApi.Infrastructure.Data;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +26,14 @@ builder.Services.AddSwaggerGen();
 
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var context = services.GetRequiredService<BancoApiDbContext>();
+
+    SeedData.Initialize(services, context); 
+}
 
 if (app.Environment.IsDevelopment())
 {

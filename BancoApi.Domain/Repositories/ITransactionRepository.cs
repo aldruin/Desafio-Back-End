@@ -10,4 +10,5 @@ namespace BancoApi.Domain.Repositories;
 public interface ITransactionRepository : IRepository<TransactionWallet>
 {
     Task<TransactionWallet> GetByExpressionAsync(Expression<Func<TransactionWallet, bool>> expression);
+    Task<List<TransactionWallet>> GetListByExpressionAsync(Expression<Func<TransactionWallet, bool>> expression);
 }

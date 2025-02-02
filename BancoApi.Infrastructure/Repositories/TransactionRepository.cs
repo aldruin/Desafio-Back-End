@@ -19,4 +19,8 @@ public class TransactionRepository : Repository<TransactionWallet>, ITransaction
     {
         return await this.Query.FirstOrDefaultAsync(expression);
     }
+    public async Task<List<TransactionWallet>> GetListByExpressionAsync(Expression<Func<TransactionWallet, bool>> expression)
+    {
+        return await this.Query.Where(expression).ToListAsync();
+    }
 }

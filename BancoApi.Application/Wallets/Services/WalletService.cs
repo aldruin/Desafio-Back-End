@@ -63,12 +63,6 @@ public class WalletService : IWalletService
             return null;
         }
 
-        if (loggedUserId == Guid.Empty)
-        {
-            _notificationHandler.AddNotification("FailToGetWallet", "Erro ao obter carteira de usuário, informe um ID válido do tipo Guid.");
-            return null;
-        }
-
         var wallet = await _walletRepository.GetByExpressionAsync(w => w.UserId == loggedUserId);
 
         if (wallet == null)

@@ -89,4 +89,27 @@ public class TransactionController : ControllerBase
             Errors = notifications
         });
     }
+
+    [HttpGet("transactions")]
+    public async Task<IActionResult> GetTransactionsWithDateFilter([FromQuery] DateTime? date)
+    {
+        var loggedUser = HttpContext.User;
+        var transactions = await _transactionService.GetTransactionsByUserWithOptionalDateFilter(loggedUser, date);
+        var notifications = _notificationHandler.GetNotifications();
+
+        if (transactions != null)
+        {
+            return Ok(new
+            {
+                Success = true,
+                Data = transactions,
+                Notifications = notifications
+            });
+        }
+        return BadRequest(new
+        {
+            Success = false,
+            Errors = notifications
+        });
+    }
 }
