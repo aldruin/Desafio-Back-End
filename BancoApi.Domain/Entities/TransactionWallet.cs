@@ -12,7 +12,6 @@ public sealed class TransactionWallet : Entity
     public Guid OriginWalletId { get; set; }
     public Wallet OriginWallet { get; set; }
     public Guid DestinationWalletId { get; set; }
-    public Wallet DestinationWallet { get; set; }
     public decimal Value { get; set; }
     public DateTime TransactionDate { get; set; }
     public TransactionOperation Operation { get; set; }

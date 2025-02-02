@@ -203,14 +203,10 @@ public class UserService : IUserService
 
     public async Task<UserDto> UpdateAsync(ClaimsPrincipal loggedUser, UserDto dto)
     {
-        var validate = await new UserValidator().ValidateAsync(dto);
-        if (!validate.IsValid)
+        if (dto.Id == Guid.Empty)
         {
-            foreach (var error in validate.Errors)
-            {
-                _notificationHandler.AddNotification("InvalidUser", error.ErrorMessage);
-                return null;
-            }
+            _notificationHandler.AddNotification("InvalidUserId", "O ID informado é inválido ou nulo.");
+            return null;
         }
 
         var loggedUserId = Guid.TryParse(loggedUser.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var userId) ? userId : Guid.Empty;
@@ -229,28 +225,56 @@ public class UserService : IUserService
             return null;
         }
 
-        var updatedUser = new User
+        bool hasChanges = false;
+
+        if (!string.IsNullOrWhiteSpace(dto.Name) && user.Name != dto.Name)
         {
-            Id = user.Id,
-            Name = dto.Name,
-            LastName = dto.LastName,
-            Cpf = dto.Cpf,
-            Email = new Email(dto.Email),
-            Password = new Password(dto.Password)
-        };
+            user.Name = dto.Name;
+            hasChanges = true;
+        }
 
-        user.SetPassword();
+        if (!string.IsNullOrWhiteSpace(dto.LastName) && user.LastName != dto.LastName)
+        {
+            user.LastName = dto.LastName;
+            hasChanges = true;
+        }
 
-        await _userRepository.UpdateAsync(updatedUser);
+        if (!string.IsNullOrWhiteSpace(dto.Cpf) && user.Cpf != dto.Cpf)
+        {
+            user.Cpf = dto.Cpf;
+            hasChanges = true;
+        }
+
+        if (!string.IsNullOrWhiteSpace(dto.Email) && user.Email.Value != dto.Email)
+        {
+            user.Email = new Email(dto.Email);
+            hasChanges = true;
+        }
+
+        if (!string.IsNullOrWhiteSpace(dto.Password))
+        {
+            user.Password = new Password(dto.Password);
+            user.SetPassword();
+            hasChanges = true;
+        }
+
+        if (!hasChanges)
+        {
+            _notificationHandler.AddNotification("NothingToUpdate", "Não foi encontrado nenhum dado para atualizar.");
+            return null;
+        }
+
+
+        await _userRepository.UpdateAsync(user);
 
         _notificationHandler.AddNotification("UsuarioAtualizado", "Os  dados de usuario foram atualizados com sucesso.");
-        return new UserDto()
+        return new UserDto
         {
-            Id = updatedUser.Id,
-            Name = updatedUser.Name,
-            LastName = updatedUser.LastName,
-            Cpf = updatedUser.Cpf,
-            Email = updatedUser.Email.Value
+            Id = user.Id,
+            Name = user.Name,
+            LastName = user.LastName,
+            Cpf = user.Cpf,
+            Email = user.Email.Value
         };
     }
 }

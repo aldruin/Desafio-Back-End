@@ -91,8 +91,8 @@ public static class SeedData
 
                 var transaction = new TransactionWallet
                 {
-                    OriginWallet = originWallet,
-                    DestinationWallet = destinationWallet,
+                    OriginWalletId = originWallet.Id,
+                    DestinationWalletId = destinationWallet.Id,
                     Value = (decimal)(random.NextDouble() * 500),
                     TransactionDate = DateTime.UtcNow.AddDays(-random.Next(1, 30)), 
                     Operation = transactionTypes[random.Next(transactionTypes.Count)]

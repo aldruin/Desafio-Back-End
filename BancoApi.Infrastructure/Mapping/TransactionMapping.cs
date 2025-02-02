@@ -58,11 +58,6 @@ public class TransactionMapping : IEntityTypeConfiguration<TransactionWallet>
         builder.HasOne(t => t.OriginWallet)
             .WithMany()
             .HasForeignKey(t => t.OriginWalletId)
-            .OnDelete(DeleteBehavior.NoAction);
-
-        builder.HasOne(t => t.DestinationWallet)
-            .WithMany()
-            .HasForeignKey(t => t.DestinationWalletId)
-            .OnDelete(DeleteBehavior.NoAction);
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

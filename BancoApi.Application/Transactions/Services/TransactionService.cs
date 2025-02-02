@@ -143,34 +143,37 @@ public class TransactionService : ITransactionService
         {
             try
             {
-                var validate = await new TransactionValidator().ValidateAsync(dto);
-                if (!validate.IsValid)
+                if (dto.Value == null || dto.Value <= 0)
                 {
-                    foreach (var error in validate.Errors)
-                    {
-                        _notificationHandler.AddNotification("InvalidTransaction", error.ErrorMessage);
-                        return null;
-                    }
+                    _notificationHandler.AddNotification("ValueMustBeValuable", "O valor não pode ser nulo. Valor precisa ser maior do que zero.");
+                    return null;
                 }
 
-                var loggerUserWallet = Guid.TryParse(user.FindFirst("walletId")?.Value, out var walletId) ? walletId : Guid.Empty;
-                if (loggerUserWallet == Guid.Empty)
+                if (string.IsNullOrWhiteSpace(dto.Cpf) ||
+                    !System.Text.RegularExpressions.Regex.IsMatch(dto.Cpf, @"^\d{11}$|^\d{3}\.\d{3}\.\d{3}-\d{2}$"))
+                {
+                    _notificationHandler.AddNotification("CpfInvalido", "O CPF é obrigatório e deve estar no formato 000.000.000-00 ou 00000000000.");
+                    return null;
+                }
+
+                var loggedUserWallet = Guid.TryParse(user.FindFirst("walletId")?.Value, out var walletId) ? walletId : Guid.Empty;
+                if (loggedUserWallet == Guid.Empty)
                 {
                     _notificationHandler.AddNotification("InvalidWallet", "Wallet ID de origem não encontrada.");
                     return null;
                 }
 
-                if (loggerUserWallet != dto.OriginWalletId)
-                {
-                    _notificationHandler.AddNotification("InvalidWallet", "Carteira de usuario autenticado e carteira de origem não coincidem.");
-                    return null;
-                }
+                var destinationWallet = await _walletService.GetWalletByCpf(dto.Cpf);
+
+                Guid destinationWalletId = (destinationWallet?.Id.HasValue == true && Guid.TryParse(destinationWallet.Id.Value.ToString(), out var destinationId))
+                    ? destinationId
+                    : Guid.Empty;
 
                 var operation = TransactionOperation.Transference;
                 var transaction = new TransactionWallet
                 {
-                    OriginWalletId = loggerUserWallet,
-                    DestinationWalletId = dto.DestinationWalletId,
+                    OriginWalletId = loggedUserWallet,
+                    DestinationWalletId = destinationWalletId,
                     Value = dto.Value,
                     TransactionDate = DateTime.UtcNow,
                     Operation = operation

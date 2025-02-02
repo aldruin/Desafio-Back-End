@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using BancoApi.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BancoApi.Infrastructure.Migrations
 {
     [DbContext(typeof(BancoApiDbContext))]
-    partial class BancoApiDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250202020341_AdicionaCascadeDeleteNaEntidadeTransaction")]
+    partial class AdicionaCascadeDeleteNaEntidadeTransaction
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -65,6 +68,8 @@ namespace BancoApi.Infrastructure.Migrations
 
                     b.HasKey("Id")
                         .HasName("PK_Transaction");
+
+                    b.HasIndex("DestinationWalletId");
 
                     b.HasIndex("OriginWalletId");
 
@@ -149,11 +154,19 @@ namespace BancoApi.Infrastructure.Migrations
 
             modelBuilder.Entity("BancoApi.Domain.Entities.TransactionWallet", b =>
                 {
+                    b.HasOne("BancoApi.Domain.Entities.Wallet", "DestinationWallet")
+                        .WithMany()
+                        .HasForeignKey("DestinationWalletId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("BancoApi.Domain.Entities.Wallet", "OriginWallet")
                         .WithMany()
                         .HasForeignKey("OriginWalletId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("DestinationWallet");
 
                     b.Navigation("OriginWallet");
                 });

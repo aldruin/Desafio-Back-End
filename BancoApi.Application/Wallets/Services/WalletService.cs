@@ -210,4 +210,29 @@ public class WalletService : IWalletService
             }
         }
     }
+
+    public async Task<WalletDto> GetWalletByCpf(string cpf)
+    {
+        if (cpf == null)
+        {
+            _notificationHandler.AddNotification("InvalidCpf", "Falha ao obter carteira com CPF fornecido. CPF Inválido ou Nulo.");
+            return null;
+        }
+
+        var wallet = await _walletRepository.GetByExpressionAsync(w => w.User.Cpf == cpf);
+
+        if (wallet == null)
+        {
+            _notificationHandler.AddNotification("FailToGetWallet", "Falha ao obter carteira com CPF fornecido. Carteira de usuário não encontrada.");
+            return null;
+        }
+
+        return new WalletDto
+        {
+            Id = wallet.Id,
+            UserId = wallet.UserId,
+            TransactionsId = wallet.TransactionsId,
+            Balance = wallet.Balance
+        };
+    }
 }

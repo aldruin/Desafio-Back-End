@@ -12,5 +12,6 @@ public record TransactionDto
     public Guid DestinationWalletId { get; set; }
     public decimal Value { get; set; }
     public DateTime? TransactionDate { get; set; }
+    public string? Cpf { get; set; }
 
 }

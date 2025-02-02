@@ -44,28 +44,28 @@ public class TransactionController : ControllerBase
         });
     }
 
-    [HttpPost("withdraw")]
-    public async Task<IActionResult> WithdrawAsync([FromBody] TransactionDto dto)
-    {
-        var loggedUser = HttpContext.User;
-        var transaction = await _transactionService.WithdrawAsync(loggedUser, dto);
-        var notifications = _notificationHandler.GetNotifications();
+    //[HttpPost("withdraw")]
+    //public async Task<IActionResult> WithdrawAsync([FromBody] TransactionDto dto)
+    //{
+    //    var loggedUser = HttpContext.User;
+    //    var transaction = await _transactionService.WithdrawAsync(loggedUser, dto);
+    //    var notifications = _notificationHandler.GetNotifications();
 
-        if (transaction != null)
-        {
-            return Ok(new
-            {
-                Success = true,
-                Data = transaction,
-                Notifications = notifications
-            });
-        }
-        return BadRequest(new
-        {
-            Success = false,
-            Errors = notifications
-        });
-    }
+    //    if (transaction != null)
+    //    {
+    //        return Ok(new
+    //        {
+    //            Success = true,
+    //            Data = transaction,
+    //            Notifications = notifications
+    //        });
+    //    }
+    //    return BadRequest(new
+    //    {
+    //        Success = false,
+    //        Errors = notifications
+    //    });
+    //}
 
     [HttpPost("transfer")]
     public async Task<IActionResult> TransferAsync([FromBody] TransactionDto dto)

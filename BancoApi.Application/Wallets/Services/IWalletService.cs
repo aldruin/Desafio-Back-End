@@ -16,4 +16,5 @@ public interface IWalletService
     Task<WalletDto> GetByUserCpfAsync(ClaimsPrincipal user);
     Task<WalletDto> GetByUserEmailAsync(ClaimsPrincipal user);
     Task<bool> UpdateBalanceAsync(Guid transactionId, Guid originWalletId, Guid destinationWalletId, decimal value, string operation);
+    Task<WalletDto> GetWalletByCpf(string cpf);
 }
