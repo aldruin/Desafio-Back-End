@@ -91,10 +91,11 @@ A **BancoAPI** é uma API RESTful que permite a gestão de usuários, carteiras 
         "CPF inválido. O formato correto é 000.000.000-00 ou 00000000000."
         "O endereço de E-mail é obrigatório"
         "A senha é obrigatória"
+------------------------------------------------------------------------------------------------
 
   - **GET /api/user/id**
   
-  Este endpoint retorna os dados do usuário logado, identificado pelo seu token de autenticação.
+    Este endpoint retorna os dados do usuário logado, identificado pelo seu token de autenticação.
 
   ***Autenticação:*** Bearer token no cabeçalho da requisição (token JWT do usuário logado)
 
@@ -145,8 +146,8 @@ A **BancoAPI** é uma API RESTful que permite a gestão de usuários, carteiras 
   - **GET /api/user/email**
 ------------------------------------------------------------------------------------------------
 
-  - **DELETE /api/user/cpf**
-  Este endpoint remove o usuário logado, sua carteira e transações no banco de dados do sistema.
+  - **DELETE /api/user/id**
+    Este endpoint remove o usuário logado, sua carteira e transações no banco de dados do sistema.
 
   ***Autenticação:*** Bearer token no cabeçalho da requisição (token JWT do usuário logado)
   
@@ -164,10 +165,63 @@ A **BancoAPI** é uma API RESTful que permite a gestão de usuários, carteiras 
           ]
         }
       ]
-  ***Se não encontrado ou erro:***
+  **Se não encontrado ou erro:**
 
     "InvalidUserId", "O ID informado é inválido."
     "UserNotFound", "Não foi possivel remover usuário com ID fornecido, usuário não encontrado."
+  ------------------------------------------------------------------------------------------------
+
+- **UPDATE /api/user/update**
+    Este endpoint atualiza dados do usuário logado.
+
+  ***Autenticação:*** Bearer token no cabeçalho da requisição (token JWT do usuário logado)
+
+  **Corpo da requisição:**
+  **OBS: enviar somente o ID de usuário e dados a serem atualizados.**
+  
+      ```json
+      [
+        {
+          "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+          "name": "string",
+          "lastName": "string",
+          "cpf": "string",
+          "email": "string",
+          "password": "string"
+        }
+      ]
+  
+  **Resposta:**
+  
+      ```json
+        [
+          {
+            "success": true,
+            "data": {
+            "id": "a290badc-e1ce-44b0-8059-dc29c17e27ee",
+            "name": "Aldruin",
+            "lastName": "Souza",
+            "cpf": "05198084956",
+            "email": "teste@teste.com",
+            "password": null
+            },
+            "notifications": [
+              {
+                "action": "UsuarioAtualizado",
+                "message": "Os  dados de usuario foram atualizados com sucesso."
+              }
+            ]
+          }
+        ]
+    
+**Se não encontrado ou erro:**
+
+    "Unauthorized", "O ID do Usuario logado não coincide com o ID passado."
+    "NothingToUpdate", "Não foi encontrado nenhum dado para atualizar."
+    "UserNotFound", "Não foi encontrado o usuário com ID fornecido"
+    "InvalidUserId", "O ID informado é inválido ou nulo."
+  ------------------------------------------------------------------------------------------------
+
 
 
   
