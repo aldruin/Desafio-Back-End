@@ -1,6 +1,65 @@
 # BancoAPI
 
-A **BancoAPI** é uma API RESTful que permite a gestão de usuários, carteiras e transações financeiras. A API foi construída utilizando ASP.NET Core, EF Core e PostgreSQL, e segue boas práticas de design de software.
+A **BancoAPI** é uma API REST desenvolvida em ASP.NET Core para facilitar a gestão de usuários, carteiras e transações financeiras. Ela foi projetada seguindo boas práticas de desenvolvimento e arquitetura, utilizando Entity Framework Core para a persistência de dados e PostgreSQL como banco de dados.
+
+## Como executar o projeto
+
+### 1. Pré-requisitos
+Certifique-se de ter os seguintes itens instalados:
+- .NET SDK 8.0
+- PostgreSQL
+
+### 2. Clone o repositório
+
+    git clone https://github.com/seu-usuario/BancoAPI.git  
+    cd BancoAPI  
+
+### 3. Configure a string de conexão
+- No arquivo appsettings.json, configure a string de conexão com o banco de dados PostgreSQL
+
+      "ConnectionStrings": {
+        "DefaultConnection": "Host=localhost;Port=5432;Database=bancoapi;Username=postgres;Password=admin"
+      }
+  
+  ### 4. Aplique as migrações
+  Antes de rodar a aplicação, aplique as migrações para criar as tabelas no banco de dados.
+
+  **No terminal do projeto BancoApi.Api :**
+
+      dotnet ef migrations add InitialMigration --project ../BancoApi.Infrastructure/BancoApi.Infrastructure.csproj
+
+  ### 5. Execute o projeto
+
+  Ao executar a primeira vez, irá popular o banco de dados através do SeedData.cs, que irá executar automaticamente pelo Program.cs
+
+  Os usuários padrões são:
+
+      Name = "João",
+      LastName = "Silva",
+      Cpf = "12345678901",
+      Email = new Email { Value = "joao.silva@example.com" },
+      Password = new Password { Value = "Senha123" }
+
+      Name = "Maria",
+      LastName = "Oliveira",
+      Cpf = "23456789012",
+      Email = new Email { Value = "maria.oliveira@example.com" },
+      Password = new Password { Value = "Senha123" }
+
+      Name = "Carlos",
+      LastName = "Santos",
+      Cpf = "34567890123",
+      Email = new Email { Value = "carlos.santos@example.com" },
+      Password = new Password { Value = "Senha123" }
+
+  É importante utilizar um usuário criado, seja padrão ou não, para testar a aplicação, pois a maioria dos Endpoints utiliza a informação contida na Claim do Usuário logado.
+  
+  **Basta rodar a aplicação:**
+
+      dotnet run
+
+  **A API estará disponível em https://localhost:7000 ou http://localhost:5162.**
+
 
 ## Funcionalidades
 
